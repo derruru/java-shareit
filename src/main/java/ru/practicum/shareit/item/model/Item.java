@@ -19,7 +19,9 @@ public class Item {
 
     private ItemRequest request;
 
-    public Item() {}
+    public Item() {
+
+    }
 
     public Item(long id, String name, String description, boolean available, ItemRequest request) {
         this.id = id;
