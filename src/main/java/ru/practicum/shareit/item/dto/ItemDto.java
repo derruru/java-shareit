@@ -1,17 +1,44 @@
 package ru.practicum.shareit.item.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/**
- * TODO Sprint add-controllers.
- */
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ItemDto {
 
+    private long id;
+
+    @NotNull
+    @NotBlank
     private String name;
 
+    @NotNull
+    @NotBlank
     private String description;
 
+    @NotNull
     private Boolean available;
+
+    private long userId;
+
+    private LocalDateTime lastBooking;
+
+    private LocalDateTime nextBooking;
+
+    private List<CommentDto> comments;
+
+    public ItemDto(String name, String description, Boolean available) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+    }
 
 }

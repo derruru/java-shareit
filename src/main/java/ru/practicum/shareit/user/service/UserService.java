@@ -1,44 +1,54 @@
 package ru.practicum.shareit.user.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
-import java.util.List;
-
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserStorage userStorage;
 
-    @Autowired
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
+    @Transactional
+    public UserDto createUser(UserDto userDto) {
+        return UserMapper.toUserDto(userStorage.save(UserMapper.fromUserDto(userDto)));
     }
 
-    public User createUser(User user) {
-        return userStorage.createUser(user);
+    @Transactional
+    public UserDto updateUser(long userId, UserDto userDto) {
+        User tableUser = UserMapper.fromUserDtoWithId(this.getUserById(userId));
+        User user = UserMapper.fromUserDto(userDto);
+        if (user.getName() != null) {
+            tableUser.setName(user.getName());
+        }
+        if (user.getEmail() != null) {
+            tableUser.setEmail(user.getEmail());
+        }
+        return UserMapper.toUserDto(userStorage.save(tableUser));
     }
 
-    public User updateUser(long userId, User user) {
-        return userStorage.updateUser(userId, user);
+
+    @Transactional
+    public UserDto getUserById(long userId) {
+        if (!userStorage.existsById(userId)) {
+            throw new NotFoundException("Такого пользователя не существует!");
+        }
+        return UserMapper.toUserDto(userStorage.findById(userId).get());
     }
 
-    public User getUserById(long userId) {
-        return userStorage.getUserById(userId);
-    }
-
-    public List<User> getAllUsers() {
-        return userStorage.getAllUsers();
-    }
-
+    @Transactional
     public void deleteUser(long userId) {
-        userStorage.deleteUser(userId);
+        userStorage.deleteById(userId);
     }
 
-    public boolean isExist(long userId) {
-        return userStorage.isExist(userId);
+    public boolean isExists(long userId) {
+        return userStorage.existsById(userId);
     }
 
 }

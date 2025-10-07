@@ -21,8 +21,8 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleAlreadyExistException(final AlreadyExistException e) {
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleAlreadyExistException(final AccessDeniedException e) {
         return new ErrorResponse(e.getMessage());
     }
 }
